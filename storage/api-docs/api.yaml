@@ -1,0 +1,57 @@
+openapi: 3.0.3
+info:
+  title: PERSIUM APIs
+  description: |-
+    This is PERSIUM STATION SERVICE APIs documentation
+  contact:
+    email: travis@persium.co.uk
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: https://petstore3.swagger.io/api/v3
+tags:
+  - name: station
+    description: Everything about Stations
+  - name: wikipedia
+    description: Wikipedia
+paths:
+  /v1/wikipedia:
+    get:
+      tags:
+        - wikipedia
+      summary: Get our wikipedia
+      description: Get our wikipedia
+      operationId: GetWikipedia
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  chart:
+                    type: array
+                    items:
+                      properties:
+                        title:
+                          type: string
+                          example: Air Pollution and Climate Change History
+                        content:
+                          type: string
+                          example: Air pollution is an international public health crisis
+                        posts:
+                          type: array
+                          items:
+                            properties:
+                              title:
+                                  type: string
+                                  example: Ozone
+                              content:
+                                  type: string
+                                  example: Ozone (O₃) can be good or bad for your health and the environment

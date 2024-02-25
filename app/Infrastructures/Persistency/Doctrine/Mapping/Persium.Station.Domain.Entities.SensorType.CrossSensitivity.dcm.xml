@@ -1,0 +1,25 @@
+<doctrine-mapping xmlns="https://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="https://doctrine-project.org/schemas/orm/doctrine-mapping
+                          https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Persium\Station\Domain\Entities\SensorType\CrossSensitivity" table="cross_sensitivities">
+        <id name="id" column="id" type="bigint" >
+            <generator strategy="IDENTITY" />
+        </id>
+        <field name="uuid" column="uuid" type="string" length="36" unique="true" />
+        <field name="name" column="name" type="string" length="50" />
+        <field name="adjustment" column="adjustment" type="float" />
+        <field name="concentration" column="concentration" type="float" />
+        <field name="created_at" column="created_at" type="datetime" />
+        <field name="updated_at" column="updated_at" type="datetime" />
+        <field name="deleted_at" column="deleted_at" type="datetime" nullable="true" />
+
+        <many-to-one field="sensor_type" target-entity="Persium\Station\Domain\Entities\SensorType\SensorType" inversed-by="cross_sensitivities">
+                <join-column name="sensor_type_id" referenced-column-name="id" nullable="false"/>
+        </many-to-one>
+
+        <lifecycle-callbacks>
+            <lifecycle-callback type="preUpdate" method="setUpdatedAt"/>
+        </lifecycle-callbacks>
+    </entity>
+</doctrine-mapping>

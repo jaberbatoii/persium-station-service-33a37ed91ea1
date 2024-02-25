@@ -1,0 +1,434 @@
+openapi: 3.0.3
+info:
+  title: PERSIUM APIs
+  description: |-
+    This is PERSIUM OPEN APIs documentation 
+  contact:
+    email: travis@persium.co.uk
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: https://petstore3.swagger.io/api/v3
+tags:
+  - name: station
+    description: Everything about Stations
+paths:
+  /station:
+    get:
+      tags:
+          - station
+      summary: Get all City and Coordinates
+      description: Get all City and Coordinates
+      operationId: GetAllCityAndCoordinates
+      parameters:
+        - name: page
+          in: query
+          description: page
+          required: false
+          schema:
+            type: number
+            example: 1
+        - name: limit
+          in: query
+          description: limit
+          required: false
+          schema:
+            type: number
+            example: 20
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/City'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+  /station/aqi/latest:
+    get:
+      tags:
+        - station
+      summary: Real-time Air Quality Index (AQI)
+      description: Returns Real-time Air Quality Index (AQI) of one station
+      operationId: getRealTimeAQIOneStation
+      parameters:
+        - name: aqi_type
+          in: query
+          description: Type of AQI to return
+          required: false
+          schema:
+            type: string
+            enum:
+              - daqi
+              - caqi
+              - usaqi
+        - name: latitude
+          in: query
+          description: Latitude
+          required: true
+          schema:
+            type: number
+            example: 1.11111111
+        - name: Longitude
+          in: query
+          description: Longitude
+          required: false
+          schema:
+            type: number
+            example: 1.11111111
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  aqi:
+                    type: integer
+                    example: 8
+        '404':
+          description: Coordinates not found
+  /station/{stationUUID}/aqi/latest:
+    get:
+      tags:
+        - station
+      summary: Real-time Air Quality Index (AQI) For a Station
+      description: Returns Real-time Air Quality Index (AQI) for a station by UUID
+      operationId: getRealTimeAQIStationUUID
+      parameters:
+        - name: stationUUID
+          in: path
+          description: UUID of station to return
+          required: true
+          schema:
+            type: string
+            example: station-uuid
+        - name: aqi_type
+          in: query
+          description: Type of AQI to return
+          required: false
+          schema:
+            type: string
+            enum:
+              - daqi
+              - caqi
+              - usaqi
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  aqi:
+                    type: integer
+                    example: 8
+        '404':
+          description: Station not found
+  /station/{stationUUID}:
+    get:
+      tags:
+        - station
+      summary: Get Station Detail
+      description: Get Station Detail
+      operationId: GetStationDetail
+      parameters:
+        - name: stationUUID
+          in: path
+          description: UUID of station to return
+          required: true
+          schema:
+            type: string
+            example: station-uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Station'
+        '404':
+          description: Station not found
+  /station/{stationUUID}/data/atmospheric/{atmosphericCode}:
+    get:
+      tags:
+        - Data
+      summary: Get Station Historic Data for One Atmospheric 
+      description: GetStationAtmosphericHistoricData
+      operationId: GetStationAtmosphericHistoricData
+      parameters:
+        - name: stationUUID
+          in: path
+          description: UUID of station to return
+          required: true
+          schema:
+            type: string
+            example: station-uuid
+        - name: atmosphericCode
+          in: path
+          description: atmospheric code
+          required: true
+          schema:
+            type: string
+            example: temperature
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    temperature:
+                      $ref: '#/components/schemas/StationData/properties/temperature'
+                    date:
+                      $ref: '#/components/schemas/StationData/properties/date'
+        '404':
+          description: Station not found
+  /station/{stationUUID}/data/pollutant/{pollutantCode}:
+    get:
+      tags:
+        - Data
+      summary: Get Station Historic Data for One Pollutant 
+      description: GetStationPollutantHistoricData
+      operationId: GetStationPollutantHistoricData
+      parameters:
+        - name: stationUUID
+          in: path
+          description: UUID of station to return
+          required: true
+          schema:
+            type: string
+            example: station-uuid
+        - name: pollutantCode
+          in: path
+          description: pollutant code
+          required: true
+          schema:
+            type: string
+            example: NO2
+        - name: unit
+          in: query
+          description: unit to return
+          required: false
+          schema:
+            type: string
+            enum:
+              - ugm3
+              - ppm
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    value:
+                      $ref: '#/components/schemas/Pollutant/properties/ugm3'
+                    date:
+                      $ref: '#/components/schemas/Pollutant/properties/date'
+        '404':
+          description: Station not found
+  /station/{stationUUID}/forecast/aqi:
+    get:
+      tags:
+        - Data
+      summary: Forecast AQI for a station 
+      description: ForecastAQIForAStation
+      operationId: ForecastAQIForAStation
+      parameters:
+        - name: stationUUID
+          in: path
+          description: UUID of station to return
+          required: true
+          schema:
+            type: string
+            example: station-uuid
+        - name: aqiType
+          in: query
+          description: AQI type to return
+          required: false
+          schema:
+            type: string
+            enum:
+              - daqi
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    value:
+                      $ref: '#/components/schemas/StationData/properties/date'
+                    date:
+                      $ref: '#/components/schemas/StationData/properties/aqi'
+        '404':
+          description: Station not found
+  /city/aqi/rank:
+    get:
+      tags:
+          - City
+      summary: Get City AQI ranking 
+      description: GetCityAQIranking
+      operationId: GetCityAQIranking
+      parameters:
+        - name: aqiType
+          in: query
+          description: AQI Type to return
+          required: true
+          schema:
+            type: string
+            enum:
+            - daqi
+            - caqi
+            - ugsqi
+        - name: page
+          in: query
+          description: page
+          required: false
+          schema:
+            type: number
+            example: 1
+        - name: limit
+          in: query
+          description: limit
+          required: false
+          schema:
+            type: number
+            example: 20
+        - name: sort
+          in: query
+          description: sort direction
+          required: true
+          schema:
+            type: string
+            enum:
+            - ascending
+            - descending
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      properties:
+                        long_name:
+                          $ref: '#/components/schemas/City/properties/long_name'
+                        short_name:
+                          $ref: '#/components/schemas/City/properties/short_name'
+                        aqi:
+                          type: integer
+                          example: 5
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+  
+components:
+  schemas:
+    City:
+      type: object
+      properties:
+        uuid:
+          type: string
+          example: City UUID
+        long_name:
+          type: string
+          example: City Longname
+        short_name:
+          type: string
+          example: City Shortname
+        stations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Station'
+    Station:
+      type: object
+      properties:
+        uuid:
+          type: string
+          example: station-uuid
+        name:
+          type: string
+          example: Station Name
+        latitude:
+          type: number
+          example: 0.12345563
+        longitude:
+          type: number
+          example: -32.43252322
+        altitude:
+          type: number
+          example: 0.3
+        aqi:
+          type: integer
+          example: 1
+      xml:
+        name: station
+        
+    Meta:
+      type: object
+      properties:
+        page:
+          type: integer
+          example: 1
+        limit:
+          type: integer
+          example: 20
+        total:
+          type: integer
+          example: 10000
+      xml:
+        name: meta
+    StationData:
+      type: object
+      properties:
+        date:
+          type: string
+          example: 2023-01-02 01:00:00
+        temperature:
+          type: number
+          example: 23
+        humidity:
+          type: number
+          example: 1013
+        aqi:
+          type: integer
+          example: 5
+      xml:
+        name: station-data
+    Pollutant:
+      type: object
+      properties:
+        date:
+          type: string
+          example: 2023-01-02 01:00:00
+        ugm3:
+          type: number
+          example: 0.2
+        ppm: 
+          type: number
+          example: 0.01
+      xml:
+        name: pollutant

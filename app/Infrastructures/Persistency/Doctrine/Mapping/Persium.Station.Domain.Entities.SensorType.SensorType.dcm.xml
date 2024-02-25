@@ -1,0 +1,34 @@
+<doctrine-mapping xmlns="https://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="https://doctrine-project.org/schemas/orm/doctrine-mapping
+                          https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Persium\Station\Domain\Entities\SensorType\SensorType" table="sensor_types">
+        <id name="id" column="id" type="bigint" >
+            <generator strategy="IDENTITY" />
+        </id>
+        <field name="uuid" column="uuid" type="string" length="36" unique="true"/>
+        <field name="name" column="name" type="string" length="50"/>
+        <field name="raw_name" column="raw_name" type="string" length="50"/>
+        <field name="display_name" column="display_name" type="string" length="100" />
+        <field name="type" column="type" type="smallint" />
+        <field name="e_multi" column="e_multi" type="float" nullable="true" />
+        <field name="e_pow_multi" column="e_pow_multi" type="float" nullable="true" />
+        <field name="m_multi" column="m_multi" type="float" nullable="true" />
+        <field name="molar_mass" column="molar_mass" type="float" nullable="true" />
+        <field name="constant" column="constant" type="float" nullable="true" />
+        <field name="p_nom" column="p_nom" type="float" nullable="true" />
+        <field name="created_at" column="created_at" type="datetime" />
+        <field name="updated_at" column="updated_at" type="datetime" />
+        <field name="deleted_at" column="deleted_at" type="datetime" nullable="true" />
+        <one-to-many field="cross_sensitivities" target-entity="Persium\Station\Domain\Entities\SensorType\CrossSensitivity" mapped-by="sensor_type" fetch="EXTRA_LAZY"/>
+        <one-to-many field="sensors" target-entity="Persium\Station\Domain\Entities\Station\StationSensor" mapped-by="type" fetch="EXTRA_LAZY"/>
+
+        <indexes>
+            <index columns="name"/>
+        </indexes>
+
+        <lifecycle-callbacks>
+            <lifecycle-callback type="preUpdate" method="setUpdatedAt"/>
+        </lifecycle-callbacks>
+    </entity>
+</doctrine-mapping>
